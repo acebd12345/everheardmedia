@@ -1,0 +1,4 @@
+﻿name,logo,show
+範例品牌 A,,TRUE
+範例品牌 B,https://example.com/logo-b.png,TRUE
+暫時不顯示的品牌,,FALSE

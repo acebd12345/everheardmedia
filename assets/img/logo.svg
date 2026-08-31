@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 48" role="img" aria-label="有所耳聞有限公司">
+  <rect x="1" y="1" width="46" height="46" rx="10" fill="none" stroke="#111111" stroke-width="2"/>
+  <circle cx="24" cy="24" r="9" fill="none" stroke="#111111" stroke-width="2"/>
+  <circle cx="24" cy="24" r="3" fill="#111111"/>
+  <text x="62" y="24" font-family="'Noto Sans TC','PingFang TC',sans-serif" font-size="19" font-weight="700" fill="#111111">有所耳聞</text>
+  <text x="62" y="40" font-family="Helvetica,Arial,sans-serif" font-size="9" letter-spacing="2.4" fill="#111111" opacity="0.55">EVER HEARD MEDIA</text>
+</svg>
