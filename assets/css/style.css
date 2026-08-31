@@ -345,7 +345,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .hero__media {
   position: absolute;
   inset: 0;
-  background: var(--c-deep) url("/assets/img/home-hero-bg.jpg") center / cover no-repeat;
+  background: var(--c-deep) url("../img/home-hero-bg.jpg") center / cover no-repeat;
 }
 .hero__video {
   width: 100%;
