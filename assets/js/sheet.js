@@ -12,12 +12,11 @@
 
 /* ===== 只需要改這裡 ======================================================== */
 const SHEET_URLS = {
-  // works 工作表的 CSV 發布網址，例：
-  // 'https://docs.google.com/spreadsheets/d/e/2PACX-xxxxx/pub?gid=0&single=true&output=csv'
-  works: '',
+  // works 工作表的 CSV 發布網址
+  works: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQmC7NS61sgE2cjafVEh3-rMfiA570Zt5_QELoG6selEa5-FMlOFrOmZxRqjcvzcwmCrwW1e1BOYNzP/pub?gid=0&single=true&output=csv',
 
-  // clients 工作表的 CSV 發布網址（注意 gid 與 works 不同）
-  clients: '',
+  // clients 工作表的 CSV 發布網址（gid 與 works 不同）
+  clients: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQmC7NS61sgE2cjafVEh3-rMfiA570Zt5_QELoG6selEa5-FMlOFrOmZxRqjcvzcwmCrwW1e1BOYNzP/pub?gid=1933858924&single=true&output=csv',
 };
 /* ========================================================================== */
 
