@@ -17,6 +17,15 @@ const SHEET_URLS = {
 
   // clients 工作表的 CSV 發布網址（gid 與 works 不同）
   clients: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQmC7NS61sgE2cjafVEh3-rMfiA570Zt5_QELoG6selEa5-FMlOFrOmZxRqjcvzcwmCrwW1e1BOYNzP/pub?gid=1933858924&single=true&output=csv',
+
+  // content 工作表（全站單一文案 key/text）的 CSV 發布網址
+  content: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQmC7NS61sgE2cjafVEh3-rMfiA570Zt5_QELoG6selEa5-FMlOFrOmZxRqjcvzcwmCrwW1e1BOYNzP/pub?gid=831834139&single=true&output=csv',
+
+  // services 工作表（服務清單：一列一個服務）的 CSV 發布網址
+  services: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQmC7NS61sgE2cjafVEh3-rMfiA570Zt5_QELoG6selEa5-FMlOFrOmZxRqjcvzcwmCrwW1e1BOYNzP/pub?gid=998310676&single=true&output=csv',
+
+  // values 工作表（理念卡清單：一列一張卡）的 CSV 發布網址
+  values: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQmC7NS61sgE2cjafVEh3-rMfiA570Zt5_QELoG6selEa5-FMlOFrOmZxRqjcvzcwmCrwW1e1BOYNzP/pub?gid=582755197&single=true&output=csv',
 };
 /* ========================================================================== */
 
@@ -227,7 +236,11 @@ const SHEET_URLS = {
     const list = rows.filter(isVisible)
       .map(r => ({ name: (r.name || '').trim(), logo: (r.logo || '').trim() }))
       .filter(c => c.name);
-    if (!list.length) return; // 沒資料就留著 HTML 內建的 fallback
+    if (!list.length) return; // 沒資料就讓整個區塊維持隱藏
+
+    // 有資料才顯示合作客戶區塊
+    document.querySelectorAll('[data-clients-section]')
+      .forEach(s => s.removeAttribute('hidden'));
 
     containers.forEach(container => {
       container.className = 'clients';
@@ -316,8 +329,219 @@ const SHEET_URLS = {
       });
   }
 
+  /* ---------------------------------------------------------------------
+     全站文案（content 工作表：key / text）
+     HTML 內建文字為備援；Sheet 有值就覆蓋。text 內的換行會轉成 <br>。
+     --------------------------------------------------------------------- */
+
+  /** 以純文字設定元素內容，\n 轉為換行。 */
+  function setText(el, value) {
+    el.textContent = '';
+    String(value).split('\n').forEach((line, i) => {
+      if (i) el.appendChild(document.createElement('br'));
+      el.appendChild(document.createTextNode(line));
+    });
+  }
+
+  // key → 選擇器（單一元素、跨頁通用）。頁面上不存在就自動略過。
+  var CONTENT_TARGETS = {
+    hero_eyebrow:  '.hero__eyebrow',
+    hero_sub:      '.hero__sub',
+    works_title:   '#works .block-head__title',
+    works_meta:    '#works .block-head__meta',
+    services_title:'.svc-split__title',
+    services_sub:  '.svc-split__sub',
+    cta_text_main: null, // 由 applyCta 特別處理
+    cta_badge:     '.cta__badge',
+    cta_button:    '.cta .btn',
+  };
+
+  function applyContent(rows) {
+    var map = {};
+    rows.forEach(function (r) {
+      // 欄位名稱同時支援中文（說明/文字/代號）與英文（key/text）
+      var k = (r['代號'] || r.key || '').trim();
+      var v = String(r['文字'] || r.text || '').trim();
+      if (k && v) map[k] = v;
+    });
+    if (!Object.keys(map).length) return;
+
+    // 1. data-t 屬性（最優先）
+    document.querySelectorAll('[data-t]').forEach(function (el) {
+      var v = map[el.getAttribute('data-t')];
+      if (v) setText(el, v);
+    });
+
+    // 2. 選擇器對照表
+    Object.keys(CONTENT_TARGETS).forEach(function (k) {
+      var sel = CONTENT_TARGETS[k];
+      if (!sel || !map[k]) return;
+      document.querySelectorAll(sel).forEach(function (el) { setText(el, map[k]); });
+    });
+
+    // 3. 首頁 hero 大標（主文 + 亮藍字）
+    var heroTitle = document.querySelector('.hero__title');
+    if (heroTitle && (map.hero_title_main || map.hero_title_accent)) {
+      heroTitle.textContent = '';
+      setText(heroTitle, map.hero_title_main || '用影像，\n讓品牌');
+      var hAccent = el('span', 'accent', '');
+      setText(hAccent, map.hero_title_accent || '被看見');
+      heroTitle.appendChild(hAccent);
+    }
+
+    // 4. CTA 大標（前段 + 亮藍字 + 後段），出現在每一頁
+    if (map.cta_title_pre || map.cta_title_accent || map.cta_title_post) {
+      document.querySelectorAll('.cta__title').forEach(function (t) {
+        t.textContent = '';
+        setText(t, map.cta_title_pre || '準備開始你的');
+        t.appendChild(document.createElement('br'));
+        var cAccent = el('span', 'accent', '');
+        setText(cAccent, map.cta_title_accent || '影像專案');
+        t.appendChild(cAccent);
+        t.appendChild(document.createTextNode(map.cta_title_post || '了嗎？'));
+      });
+    }
+
+    // 5. CTA 說明文字（內含 badge span，需保留）
+    if (map.cta_text) {
+      document.querySelectorAll('.cta__text').forEach(function (p) {
+        var badge = p.querySelector('.cta__badge');
+        p.textContent = '';
+        setText(p, map.cta_text);
+        if (badge) {
+          if (map.cta_badge) setText(badge, map.cta_badge);
+          p.appendChild(badge);
+        }
+      });
+    }
+
+    // 6. 聯絡頁三張資訊卡（依序：地址、Email、電話；只換顯示文字，連結不動）
+    var contactKeys = ['contact_address', 'contact_email', 'contact_phone'];
+    document.querySelectorAll('.contact-item__value').forEach(function (elv, i) {
+      if (map[contactKeys[i]]) setText(elv, map[contactKeys[i]]);
+    });
+
+    // 9. Footer 資訊列（依序：公司名｜統編、地址、電話、Email）
+    var footerKeys = ['footer_company', 'footer_address', 'footer_phone', 'footer_email'];
+    document.querySelectorAll('.footer__row > *').forEach(function (elv, i) {
+      if (map[footerKeys[i]]) setText(elv, map[footerKeys[i]]);
+    });
+  }
+
+  function loadContent() {
+    fetchCSV(SHEET_URLS.content)
+      .then(applyContent)
+      .catch(function (err) {
+        console.info('[sheet.js] content 使用內建預設文案：' + err.message);
+      });
+  }
+
+  /* ---------------------------------------------------------------------
+     服務清單（services 工作表：一列一個服務；欄位可用中文或英文）
+     --------------------------------------------------------------------- */
+  function rowShown(r) {
+    var s = String(r['顯示'] != null ? r['顯示'] : (r.show != null ? r.show : '')).trim().toUpperCase();
+    return s !== 'FALSE' && s !== '0' && s !== '否';
+  }
+  function rowOrder(r) {
+    var n = parseFloat(r['排序'] != null ? r['排序'] : r.order);
+    return isNaN(n) ? 9999 : n;
+  }
+  function pad2(n) { return (n < 10 ? '0' : '') + n; }
+
+  function renderServices(rows) {
+    var lists = document.querySelectorAll('.svc-list');
+    if (!lists.length) return;
+    var items = rows.filter(rowShown)
+      .map(function (r) {
+        return {
+          name: String(r['服務名稱'] || r['名稱'] || r.name || '').trim(),
+          desc: String(r['服務說明'] || r['說明'] || r.desc || '').trim(),
+          order: rowOrder(r),
+        };
+      })
+      .filter(function (i) { return i.name; })
+      .sort(function (a, b) { return a.order - b.order; });
+    if (!items.length) return;
+
+    lists.forEach(function (list) {
+      var first = list.querySelector('.svc-row');
+      var href = first && first.getAttribute('href');
+      list.innerHTML = '';
+      items.forEach(function (it, i) {
+        var row = document.createElement(href ? 'a' : 'div');
+        row.className = 'svc-row';
+        if (href) row.setAttribute('href', href);
+        var num = el('span', 'svc-row__num', pad2(i + 1));
+        var name = document.createElement('h3');
+        name.className = 'svc-row__name';
+        setText(name, it.name);
+        var desc = el('span', 'svc-row__desc', '');
+        setText(desc, it.desc);
+        row.appendChild(num); row.appendChild(name); row.appendChild(desc);
+        list.appendChild(row);
+      });
+    });
+  }
+
+  function loadServices() {
+    if (!document.querySelector('.svc-list')) return;
+    fetchCSV(SHEET_URLS.services)
+      .then(renderServices)
+      .catch(function (err) {
+        console.info('[sheet.js] services 使用內建預設內容：' + err.message);
+      });
+  }
+
+  /* ---------------------------------------------------------------------
+     理念卡清單（values 工作表：一列一張卡）
+     --------------------------------------------------------------------- */
+  function renderValues(rows) {
+    var lists = document.querySelectorAll('.value-list');
+    if (!lists.length) return;
+    var items = rows.filter(rowShown)
+      .map(function (r) {
+        return {
+          title: String(r['標題'] || r.title || '').trim(),
+          text: String(r['內容'] || r.text || '').trim(),
+          order: rowOrder(r),
+        };
+      })
+      .filter(function (i) { return i.title; })
+      .sort(function (a, b) { return a.order - b.order; });
+    if (!items.length) return;
+
+    lists.forEach(function (list) {
+      list.innerHTML = '';
+      items.forEach(function (it) {
+        var card = document.createElement('article');
+        card.className = 'card';
+        var t = document.createElement('h3');
+        t.className = 'card__title';
+        setText(t, it.title);
+        var x = document.createElement('p');
+        x.className = 'card__text';
+        setText(x, it.text);
+        card.appendChild(t); card.appendChild(x);
+        list.appendChild(card);
+      });
+    });
+  }
+
+  function loadValues() {
+    if (!document.querySelector('.value-list')) return;
+    fetchCSV(SHEET_URLS.values)
+      .then(renderValues)
+      .catch(function (err) {
+        console.info('[sheet.js] values 使用內建預設內容：' + err.message);
+      });
+  }
+
   function init() {
     initFilters();
+    loadContent();
+    loadServices();
+    loadValues();
     loadWorks();
     loadClients();
   }
