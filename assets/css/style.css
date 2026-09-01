@@ -180,7 +180,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   color: #fff;
   font-family: inherit;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 700;
   letter-spacing: .16em;
   line-height: 1.4;
   cursor: pointer;
@@ -265,7 +265,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .nav__link:hover { color: var(--c-ink); }
 .nav__link[aria-current="page"] {
   color: var(--c-ink);
-  font-weight: 500;
+  font-weight: 700;
 }
 
 /* 導覽列最後一項：深藍實心按鈕 */
@@ -274,7 +274,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   padding: 10px 24px;
   background: var(--c-ink);
   color: #fff;
-  font-weight: 500;
+  font-weight: 700;
   border-radius: var(--radius);
 }
 .nav__link--cta:hover { background: var(--c-accent); color: #fff; }
@@ -593,7 +593,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 
 .video-card__title {
   font-size: 15px;
-  font-weight: 500;
+  font-weight: 700;
   line-height: 1.6;
   letter-spacing: 0;
   color: var(--c-ink);
@@ -867,7 +867,7 @@ a.contact-item:hover { border-color: var(--c-accent); }
 .contact-item__value {
   display: block;
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 700;
   line-height: 1.6;
   color: var(--c-ink);
 }
