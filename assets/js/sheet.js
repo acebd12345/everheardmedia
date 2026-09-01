@@ -362,6 +362,8 @@ const SHEET_URLS = {
       // 欄位名稱同時支援中文（說明/文字/代號）與英文（key/text）
       var k = (r['代號'] || r.key || '').trim();
       var v = String(r['文字'] || r.text || '').trim();
+      // Sheets 的公式錯誤值（#ERROR!、#REF!…）一律當成沒填
+      if (/^#(ERROR|REF|N\/A|VALUE|NAME|DIV)/i.test(v)) v = '';
       if (k && v) map[k] = v;
     });
     if (!Object.keys(map).length) return;
