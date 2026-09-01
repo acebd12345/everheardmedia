@@ -58,10 +58,16 @@
 
   if (reduceMotion || !wideEnough) return;
 
-  // 影片抓不到（尚未上傳、404、格式不支援）就移除 src，poster 圖照樣顯示
+  // 影片抓不到（尚未上傳、404、格式不支援）就保持隱藏，底圖照樣顯示
   video.addEventListener('error', function () {
     video.removeAttribute('src');
+    video.hidden = true;
     video.load();
+  }, { once: true });
+
+  // 真正播起來才顯示，蓋過底圖
+  video.addEventListener('playing', function () {
+    video.hidden = false;
   }, { once: true });
 
   video.src = src;

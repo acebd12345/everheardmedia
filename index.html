@@ -22,10 +22,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://i.ytimg.com">
-<link rel="preload" as="image" href="assets/img/home-hero-bg.jpg" fetchpriority="high">
+<link rel="preload" as="image" href="assets/img/home-hero-bg.jpg" imagesrcset="assets/img/home-hero-bg-800.jpg 800w, assets/img/home-hero-bg.jpg 1440w" imagesizes="100vw" fetchpriority="high">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700;900&amp;display=swap" media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700;900&amp;display=swap"></noscript>
-<link rel="stylesheet" href="assets/css/style.css?v=409d1d2-f">
+<link rel="stylesheet" href="assets/css/style.css?v=e461571-h">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -86,8 +86,10 @@
   <!-- Hero：深藍影片 banner。hero.mp4 尚未提供時自動停在 poster 圖，版面不受影響。 -->
   <section class="hero">
     <div class="hero__media">
-      <video class="hero__video" autoplay muted loop playsinline preload="metadata"
-             poster="assets/img/home-hero-bg.jpg"
+      <img class="hero__img" src="assets/img/home-hero-bg.jpg"
+           srcset="assets/img/home-hero-bg-800.jpg 800w, assets/img/home-hero-bg.jpg 1440w"
+           sizes="100vw" width="1440" height="810" alt="" fetchpriority="high" decoding="async">
+      <video class="hero__video" hidden autoplay muted loop playsinline preload="none"
              data-src="assets/video/hero.mp4" aria-hidden="true" tabindex="-1"></video>
     </div>
     <div class="hero__overlay"></div>
@@ -219,7 +221,7 @@
   </div>
 </footer>
 
-<script src="assets/js/main.js?v=409d1d2-f" async></script>
-<script src="assets/js/sheet.js?v=409d1d2-f" async></script>
+<script src="assets/js/main.js?v=e461571-h" async></script>
+<script src="assets/js/sheet.js?v=e461571-h" async></script>
 </body>
 </html>

@@ -341,13 +341,16 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
   overflow: hidden;
 }
 
-/* 影片／poster 滿版；影片未提供時自然留在 poster 圖，版面不會壞 */
+/* 底層為響應式靜態圖；桌機影片載入成功後才覆蓋顯示 */
 .hero__media {
   position: absolute;
   inset: 0;
-  background: var(--c-deep) url("../img/home-hero-bg.jpg") center / cover no-repeat;
+  background: var(--c-deep);
 }
+.hero__img,
 .hero__video {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
